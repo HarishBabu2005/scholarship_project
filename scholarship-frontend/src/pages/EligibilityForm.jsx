@@ -2,7 +2,7 @@ import { useState } from "react";
 import AuthLayout from "../components/AuthLayout";
 import "../styles/theme.css";
 import { useNavigate } from "react-router-dom";
-
+import API from "../api/axios";
 function EligibilityForm() {
   const navigate = useNavigate();
 
@@ -34,14 +34,29 @@ function EligibilityForm() {
     return Object.keys(temp).length === 0;
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (validate()) {
-      console.log("Eligibility Data:", formData);
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  if (validate()) {
+    try {
+      const res = await API.post("/eligibility/check", {
+        income: formData.income,
+        marks: formData.marks,
+        category: formData.category,
+      });
+
+      localStorage.setItem(
+        "eligibilityResult",
+        JSON.stringify(res.data)
+      );
+
       navigate("/result");
-      // Later → send to backend API
+    } catch (error) {
+      alert("Eligibility check failed");
     }
-  };
+  }
+};
+
 
   return (
     <AuthLayout>

@@ -4,26 +4,11 @@ import "../styles/theme.css";
 
 function EligibilityResult() {
   const navigate = useNavigate();
+  
+ const data = JSON.parse(localStorage.getItem("eligibilityResult"));
 
-  // Sample data (later comes from backend)
-  const eligibleScholarships = [
-    {
-      name: "National Merit Scholarship",
-      amount: "₹50,000 per year",
-    },
-    {
-      name: "Minority Welfare Scholarship",
-      amount: "₹30,000 per year",
-    },
-  ];
-
-  const notEligibleScholarships = [
-    {
-      name: "Post Matric Scholarship",
-      reason: "Income exceeds eligibility limit",
-    },
-  ];
-
+const eligibleScholarships = data?.eligible || [];
+const notEligibleScholarships = data?.notEligible || [];
   return (
     <AuthLayout>
       <div className="card result-card">
