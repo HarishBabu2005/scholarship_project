@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate,Navigate } from "react-router-dom";
 import AuthLayout from "../components/AuthLayout";
 import "../styles/theme.css";
 
@@ -9,9 +9,29 @@ function EligibilityResult() {
 
 const eligibleScholarships = data?.eligible || [];
 const notEligibleScholarships = data?.notEligible || [];
+if (!localStorage.getItem("token")) {
+  return <Navigate to="/" />;
+}
+const handleLogout = () => {
+  localStorage.removeItem("token");
+  localStorage.removeItem("role");
+  localStorage.removeItem("eligibilityResult");
+  navigate("/");
+};
+
   return (
     <AuthLayout>
       <div className="card result-card">
+        <div style={{ textAlign: "right" }}>
+  <button
+    className="btn-outline"
+    style={{ fontSize: "14px" }}
+    onClick={handleLogout}
+  >
+    Logout
+  </button>
+</div>
+
         <h1>Eligibility Result</h1>
         <p>Based on your details, here are the results</p>
 

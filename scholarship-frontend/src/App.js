@@ -6,7 +6,8 @@ import EligibilityForm from "./pages/EligibilityForm";
 import EligibilityResult from "./pages/EligibilityResult";
 import AdminAddScholarship from "./pages/AdminAddScholarship";
 import AdminRoute from "./components/AdminRoute";
-
+import AdminScholarshipLists from "./pages/AdminScholarshipList";
+import StudentScholarships from "./pages/StudentScholarships";
 function App() {
   return (
     <BrowserRouter>
@@ -17,7 +18,18 @@ function App() {
         <Route path="/eligibility" element={<EligibilityForm />} />
         <Route path="/result" element={<EligibilityResult />} />
         <Route path="/admin/add-scholarship" element={ <AdminRoute><AdminAddScholarship />  </AdminRoute>} />
-        
+        <Route
+          path="/admin/scholarships"
+          element={
+            <AdminRoute>
+              <AdminScholarshipLists />
+            </AdminRoute>
+  }
+/>
+<Route
+  path="/scholarships"
+  element={<StudentScholarships/>}
+/>
       </Routes>
     </BrowserRouter>
   );

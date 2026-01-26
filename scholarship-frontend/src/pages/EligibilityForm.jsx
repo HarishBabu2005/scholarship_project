@@ -1,11 +1,14 @@
 import { useState } from "react";
 import AuthLayout from "../components/AuthLayout";
 import "../styles/theme.css";
-import { useNavigate } from "react-router-dom";
+import {  Navigate ,useNavigate } from "react-router-dom";
 import API from "../api/axios";
+
+
 function EligibilityForm() {
   const navigate = useNavigate();
   const role = localStorage.getItem("role");
+  
   const [formData, setFormData] = useState({
     name: "",
     dob: "",
@@ -18,6 +21,9 @@ function EligibilityForm() {
   });
 
   const [errors, setErrors] = useState({});
+  if (!localStorage.getItem("token")) {
+  return <Navigate to="/" />;
+}
 
   const validate = () => {
     let temp = {};
@@ -56,14 +62,31 @@ function EligibilityForm() {
     }
   }
 };
+const handleLogout = () => {
+  localStorage.removeItem("token");
+  localStorage.removeItem("role");
+  localStorage.removeItem("eligibilityResult");
+  navigate("/");
+};
 
 
   return (
     
     <AuthLayout>
       <div className="card">
+        <div style={{ textAlign: "right" }}>
+  <button
+    className="btn-outline"
+    style={{ fontSize: "14px" }}
+    onClick={handleLogout}
+  >
+    Logout
+  </button>
+</div>
+
         <h1>Check Scholarship Eligibility</h1>
         <p>Enter your details to find eligible scholarships</p>
+        
         {role === "admin" && (
           <button
             className="btn-outline"
@@ -73,6 +96,24 @@ function EligibilityForm() {
             Go to Admin Panel
           </button>
         )}
+        <button
+  className="btn-outline"
+  style={{ marginBottom: "15px" }}
+  onClick={() => navigate("/scholarships")}
+>
+  View All Scholarships
+</button>
+
+        {role === "admin" && (
+              <button
+                className="btn-outline"
+                style={{ marginBottom: "15px" }}
+                onClick={() => navigate("/admin/scholarships")}
+              >
+                View Scholarships
+              </button>
+)}
+
         <form onSubmit={handleSubmit}>
           {/* Name */}
           <div className="input-group">
