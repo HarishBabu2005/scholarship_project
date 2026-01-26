@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import API from "../api/axios";
 function EligibilityForm() {
   const navigate = useNavigate();
-
+  const role = localStorage.getItem("role");
   const [formData, setFormData] = useState({
     name: "",
     dob: "",
@@ -59,11 +59,20 @@ function EligibilityForm() {
 
 
   return (
+    
     <AuthLayout>
       <div className="card">
         <h1>Check Scholarship Eligibility</h1>
         <p>Enter your details to find eligible scholarships</p>
-
+        {role === "admin" && (
+          <button
+            className="btn-outline"
+            style={{ marginBottom: "15px" }}
+            onClick={() => navigate("/admin/add-scholarship")}
+          >
+            Go to Admin Panel
+          </button>
+        )}
         <form onSubmit={handleSubmit}>
           {/* Name */}
           <div className="input-group">

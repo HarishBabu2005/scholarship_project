@@ -5,7 +5,9 @@ const {
   getScholarships,
 } = require("../controllers/adminController");
 
-router.post("/scholarship", addScholarship);
-router.get("/scholarships", getScholarships);
+const { protect, adminOnly } = require("../middleware/authMiddleware");
+
+router.post("/scholarship", protect, adminOnly, addScholarship);
+router.get("/scholarships", protect, adminOnly, getScholarships);
 
 module.exports = router;
