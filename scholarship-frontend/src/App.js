@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import ScholarshipHome from "./pages/ScholarshipHome";
 import Welcome from "./components/Welcome";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -12,6 +13,9 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+         {/* Landing Page */}
+        <Route path="/" element={<ScholarshipHome />} />
+
         <Route path="/" element={<Welcome />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
@@ -36,3 +40,6 @@ function App() {
 }
 
 export default App;
+
+
+

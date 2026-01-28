@@ -100,10 +100,13 @@ const handleLogout = () => {
             >
               <option value="">Select</option>
               <option>All</option>
+              <option>Female</option>
               <option>SC</option>
               <option>ST</option>
               <option>OBC</option>
               <option>General</option>
+              <option>Final Year Civil/ Electrical dept </option>
+
             </select>
           </div>
 
