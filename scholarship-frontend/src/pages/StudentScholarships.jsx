@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Navigate,  } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import AuthLayout from "../components/AuthLayout";
 import API from "../api/axios";
 import "../styles/theme.css";
@@ -17,14 +17,12 @@ function StudentScholarships() {
     }
   };
 
-
   useEffect(() => {
     if (token) {
       fetchScholarships();
     }
   }, [token]);
 
- 
   if (!token) {
     return <Navigate to="/" />;
   }
@@ -38,25 +36,29 @@ function StudentScholarships() {
         {scholarships.length === 0 ? (
           <p>No scholarships available</p>
         ) : (
-          scholarships.map((s) => (
-            <div key={s._id} className="result-item success-box">
-              <div>
-                <strong>{s.name}</strong>
-                <div style={{ fontSize: "13px" }}>
-                  Category: {s.category}
+          <div className="scholarship-grid">
+            {scholarships.map((s) => (
+              <div key={s._id} className="scholarship-card">
+                <div className="scholarship-title">{s.name}</div>
+
+                <div className="badge-group">
+                  <span className="badge">
+                    Category: {s.category}
+                  </span>
+                  <span className="badge">
+                    Income ≤ ₹{s.incomeLimit}
+                  </span>
+                  <span className="badge">
+                    Min Marks: {s.minMarks}
+                  </span>
                 </div>
-                <div style={{ fontSize: "13px" }}>
-                  Income ≤ ₹{s.incomeLimit}
-                </div>
-                <div style={{ fontSize: "13px" }}>
-                  Min Marks: {s.minMarks}
-                </div>
-                <div style={{ fontSize: "13px" }}>
-                  Amount: {s.amount}
+
+                <div className="amount">
+                  Scholarship Amount: ₹{s.amount}
                 </div>
               </div>
-            </div>
-          ))
+            ))}
+          </div>
         )}
       </div>
     </AuthLayout>

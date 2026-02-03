@@ -198,3 +198,70 @@ body {
   background: rgba(239, 68, 68, 0.25);
   border: 1px solid rgba(239, 68, 68, 0.4);
 }
+/* Scholarship Card Grid */
+.scholarship-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 15px;
+}
+
+/* Individual Scholarship Card */
+.scholarship-card {
+  padding: 20px;
+  border-radius: 14px;
+
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;      
+  text-align: center;       
+
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+
+.scholarship-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+}
+
+/* Title */
+.scholarship-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 8px;
+}
+
+/* Info badges */
+.badge-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 12px 0;
+  align-items: center;  
+}
+
+.badge {
+  padding: 5px 10px;
+  width: fit-content;
+  font-size: 12px;
+  border-radius: 999px;
+  background: rgba(37, 99, 235, 0.15);
+  color: #1e40af;
+  border: 1px solid rgba(37, 99, 235, 0.3);
+}
+
+/* Amount Highlight */
+.amount {
+    margin-top: 10px;
+  font-weight: 700;
+  color: #065f46;
+  font-size: 15px;
+}

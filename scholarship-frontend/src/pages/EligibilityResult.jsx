@@ -1,70 +1,91 @@
-import { useNavigate,Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import AuthLayout from "../components/AuthLayout";
 import "../styles/theme.css";
 
 function EligibilityResult() {
   const navigate = useNavigate();
-  
- const data = JSON.parse(localStorage.getItem("eligibilityResult"));
+  const token = localStorage.getItem("token");
 
-const eligibleScholarships = data?.eligible || [];
-const notEligibleScholarships = data?.notEligible || [];
-if (!localStorage.getItem("token")) {
-  return <Navigate to="/" />;
-}
-const handleLogout = () => {
-  localStorage.removeItem("token");
-  localStorage.removeItem("role");
-  localStorage.removeItem("eligibilityResult");
-  navigate("/");
-};
+  if (!token) {
+    return <Navigate to="/" />;
+  }
+
+  const data = JSON.parse(localStorage.getItem("eligibilityResult")) || {
+    eligible: [],
+    notEligible: [],
+  };
+
+  const { eligible, notEligible } = data;
 
   return (
     <AuthLayout>
       <div className="card result-card">
-        <div style={{ textAlign: "right" }}>
-  <button
-    className="btn-outline"
-    style={{ fontSize: "14px" }}
-    onClick={handleLogout}
-  >
-    Logout
-  </button>
-</div>
-
         <h1>Eligibility Result</h1>
         <p>Based on your details, here are the results</p>
 
-        {/* Eligible Scholarships */}
-        <div className="result-section">
-          <h3 className="success">Eligible Scholarships</h3>
+        {/* ✅ Eligible Scholarships */}
+        <h3 style={{ marginTop: "15px", color: "#065f46" }}>
+          Eligible Scholarships
+        </h3>
 
-          {eligibleScholarships.length > 0 ? (
-            eligibleScholarships.map((item, index) => (
-              <div key={index} className="result-item success-box">
-                <strong>{item.name}</strong>
-                <span>{item.amount}</span>
+        {eligible.length === 0 ? (
+          <p>No eligible scholarships found</p>
+        ) : (
+          <div className="scholarship-grid">
+            {eligible.map((s, index) => (
+              <div key={index} className="scholarship-card">
+                <div className="scholarship-title">{s.name}</div>
+
+                <div className="badge-group">
+                  <span className="badge">
+                    Category: {s.category || "All"}
+                  </span>
+                  <span className="badge">
+                    Income ≤ ₹{s.incomeLimit}
+                  </span>
+                  <span className="badge">
+                    Min Marks: {s.minMarks}
+                  </span>
+                </div>
+
+                <div className="amount">
+                  Scholarship Amount: ₹{s.amount}
+                </div>
               </div>
-            ))
-          ) : (
-            <p>No eligible scholarships found</p>
-          )}
-        </div>
+            ))}
+          </div>
+        )}
 
-        {/* Not Eligible Scholarships */}
-        <div className="result-section">
-          <h3 className="danger">Not Eligible</h3>
+        {/* ❌ Not Eligible Scholarships */}
+        <h3 style={{ marginTop: "20px", color: "#991b1b" }}>
+          Not Eligible
+        </h3>
 
-          {notEligibleScholarships.map((item, index) => (
-            <div key={index} className="result-item danger-box">
-              <strong>{item.name}</strong>
-              <span>{item.reason}</span>
-            </div>
-          ))}
-        </div>
+        {notEligible.length === 0 ? (
+          <p>—</p>
+        ) : (
+          <div className="scholarship-grid">
+            {notEligible.map((s, index) => (
+              <div
+                key={index}
+                className="scholarship-card"
+                style={{
+                  background: "rgba(239, 68, 68, 0.2)",
+                  border: "1px solid rgba(239, 68, 68, 0.4)",
+                }}
+              >
+                <div className="scholarship-title">{s.name}</div>
+                <div style={{ fontSize: "13px", color: "#7f1d1d" }}>
+                  Reason: {s.reason}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
 
         <button
           className="btn-outline"
+          style={{ marginTop: "20px" }}
           onClick={() => navigate("/eligibility")}
         >
           Back
