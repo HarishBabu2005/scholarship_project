@@ -40,7 +40,7 @@ function Login() {
         // Save JWT token
         localStorage.setItem("token", res.data.token);
         localStorage.setItem("role", res.data.user.role);
-        navigate("/eligibility");
+        navigate("/scholarships");
       } catch (error) {
         alert(error.response?.data?.message || "Login failed");
       }

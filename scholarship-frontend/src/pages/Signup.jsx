@@ -27,10 +27,13 @@ function Signup() {
       temp.email = "Email is required";
     }
 
+    const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/;
     if (!formData.password) {
       temp.password = "Password is required";
-    } else if (formData.password.length < 6) {
-      temp.password = "Password must be at least 6 characters";
+    } else if (formData.password.length < 8) {
+      temp.password = "Password must be at least 8 characters";
+    } else if (!specialCharRegex.test(formData.password)) {
+      temp.password = "Password must contain at least one special character";
     }
 
     if (formData.confirmPassword !== formData.password) {
@@ -105,9 +108,24 @@ function Signup() {
               type="password"
               placeholder="Create password"
               value={formData.password}
-              onChange={(e) =>
-                setFormData({ ...formData, password: e.target.value })
-              }
+              onChange={(e) => {
+                const newPassword = e.target.value;
+                setFormData({ ...formData, password: newPassword });
+
+                // Real-time validation
+                let passError = "";
+                const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/;
+
+                if (!newPassword) {
+                  passError = "Password is required";
+                } else if (newPassword.length < 8) {
+                  passError = "Password must be at least 8 characters";
+                } else if (!specialCharRegex.test(newPassword)) {
+                  passError = "Password must contain at least one special character";
+                }
+
+                setErrors((prev) => ({ ...prev, password: passError }));
+              }}
             />
             {errors.password && (
               <div className="error-text">{errors.password}</div>

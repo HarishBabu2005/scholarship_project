@@ -9,6 +9,8 @@ import AdminAddScholarship from "./pages/AdminAddScholarship";
 import AdminRoute from "./components/AdminRoute";
 import AdminScholarshipLists from "./pages/AdminScholarshipList";
 import StudentScholarships from "./pages/StudentScholarships";
+import ScholarshipDetail from "./pages/ScholarshipDetail";
+
 function App() {
   return (
     <BrowserRouter>
@@ -28,12 +30,16 @@ function App() {
             <AdminRoute>
               <AdminScholarshipLists />
             </AdminRoute>
-  }
-/>
-<Route
-  path="/scholarships"
-  element={<StudentScholarships/>}
-/>
+          }
+        />
+        <Route
+          path="/scholarships"
+          element={<StudentScholarships/>}
+        />
+        <Route
+          path="/scholarships/:id"
+          element={<ScholarshipDetail />}
+        />
       </Routes>
     </BrowserRouter>
   );
