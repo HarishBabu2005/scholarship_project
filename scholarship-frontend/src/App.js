@@ -49,7 +49,45 @@ function App() {
   );
 }
 
+          {/* Authentication */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+
+          {/* Eligibility */}
+          <Route path="/eligibility" element={<EligibilityForm />} />
+          <Route path="/result" element={<EligibilityResult />} />
+
+          {/* Student Scholarship Pages */}
+          <Route path="/scholarships" element={<StudentScholarships />} />
+          <Route path="/scholarships/:id" element={<ScholarshipDetail />} />
+
+          {/* ⭐ Document Upload Page */}
+          <Route path="/upload-documents" element={<DocumentUpload />} />
+
+          {/* Admin Pages */}
+          <Route
+            path="/admin/add-scholarship"
+            element={
+              <AdminRoute>
+                <AdminAddScholarship />
+              </AdminRoute>
+            }
+          />
+
+          <Route
+            path="/admin/scholarships"
+            element={
+              <AdminRoute>
+                <AdminScholarshipLists />
+              </AdminRoute>
+            }
+          />
+
+        </Routes>
+
+      </BrowserRouter>
+    </GoogleOAuthProvider>
+  );
+}
+
 export default App;
-
-
-
