@@ -19,7 +19,10 @@ function ScholarshipDetail() {
             <AuthLayout>
                 <div className="card">
                     <h1>Scholarship Not Found</h1>
-                    <button className="btn-primary" onClick={() => navigate("/scholarships")}>
+                    <button
+                        className="btn-primary"
+                        onClick={() => navigate("/scholarships")}
+                    >
                         Back to Scholarships
                     </button>
                 </div>
@@ -29,23 +32,45 @@ function ScholarshipDetail() {
 
     return (
         <AuthLayout>
-            <div className="card result-card" style={{ maxWidth: "800px", width: "95%", textAlign: "left" }}>
+            <div
+                className="card result-card"
+                style={{
+                    maxWidth: "800px",
+                    width: "95%",
+                    textAlign: "left"
+                }}
+            >
                 <button
                     className="btn-outline"
                     onClick={() => navigate("/scholarships")}
-                    style={{ width: "auto", marginBottom: "20px", padding: "8px 15px", fontSize: "14px" }}
+                    style={{
+                        width: "auto",
+                        marginBottom: "20px",
+                        padding: "8px 15px",
+                        fontSize: "14px"
+                    }}
                 >
                     &larr; Back
                 </button>
 
-                <h1 style={{ fontSize: "24px", color: "#1e3a8a", marginBottom: "20px", borderBottom: "2px solid rgba(30,58,138,0.2)", paddingBottom: "10px" }}>
+                <h1
+                    style={{
+                        fontSize: "24px",
+                        color: "#1e3a8a",
+                        marginBottom: "20px",
+                        borderBottom: "2px solid rgba(30,58,138,0.2)",
+                        paddingBottom: "10px"
+                    }}
+                >
                     {scholarship.title}
                 </h1>
 
                 {scholarship.source && (
                     <div className="detail-section">
                         <div className="detail-heading">Source:</div>
-                        <p style={{ color: "#4b5563", fontSize: "15px" }}>{scholarship.source}</p>
+                        <p style={{ color: "#4b5563", fontSize: "15px" }}>
+                            {scholarship.source}
+                        </p>
                     </div>
                 )}
 
@@ -60,7 +85,14 @@ function ScholarshipDetail() {
 
                 <div className="detail-section">
                     <div className="detail-heading">Amount:</div>
-                    <p style={{ color: "#065f46", fontSize: "16px", whiteSpace: "pre-wrap", fontWeight: "bold" }}>
+                    <p
+                        style={{
+                            color: "#065f46",
+                            fontSize: "16px",
+                            whiteSpace: "pre-wrap",
+                            fontWeight: "bold"
+                        }}
+                    >
                         {scholarship.amount}
                     </p>
                 </div>
@@ -76,11 +108,28 @@ function ScholarshipDetail() {
 
                 <div className="detail-section">
                     <div className="detail-heading">Documents Required:</div>
-                    <ul className="detail-list" style={{ fontSize: "15px", columns: "1" }}>
+                    <ul
+                        className="detail-list"
+                        style={{ fontSize: "15px", columns: "1" }}
+                    >
                         {scholarship.documents.map((item, i) => (
                             <li key={i}>{item}</li>
                         ))}
                     </ul>
+                </div>
+
+                {/* APPLY BUTTON */}
+                <div style={{ textAlign: "center", marginTop: "30px" }}>
+                    <button
+                        className="btn-primary"
+                        style={{
+                            padding: "12px 25px",
+                            fontSize: "16px"
+                        }}
+                        onClick={() => navigate("/upload-documents")}
+                    >
+                        Apply Scholarship → Upload Documents
+                    </button>
                 </div>
             </div>
         </AuthLayout>
