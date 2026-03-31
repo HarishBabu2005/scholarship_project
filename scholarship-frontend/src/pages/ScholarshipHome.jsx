@@ -11,7 +11,7 @@ const ScholarshipHome = () => {
     >
       {/* Navbar */}
       <nav className="nav">
-        <div className="logo">🎓 Scholarship Portal</div>
+        <div className="logo">Scholarship Portal</div>
 
         <div className="auth-links">
           <a href="/login" className="login-btn">

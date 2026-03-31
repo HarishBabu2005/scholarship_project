@@ -9,37 +9,63 @@ import AdminAddScholarship from "./pages/AdminAddScholarship";
 import AdminRoute from "./components/AdminRoute";
 import AdminScholarshipLists from "./pages/AdminScholarshipList";
 import StudentScholarships from "./pages/StudentScholarships";
+import ScholarshipDetail from "./pages/ScholarshipDetail";
+import DocumentUpload from "./pages/DocumentUpload";   // ⭐ NEW IMPORT
+
+import { GoogleOAuthProvider } from "@react-oauth/google";
+
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-         {/* Landing Page */}
-        <Route path="/" element={<ScholarshipHome />} />
+    <GoogleOAuthProvider clientId="844725495194-519nengp0k60l6kf85li1at3vqcgfom3.apps.googleusercontent.com">
+      <BrowserRouter>
 
-        <Route path="/" element={<Welcome />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/eligibility" element={<EligibilityForm />} />
-        <Route path="/result" element={<EligibilityResult />} />
-        <Route path="/admin/add-scholarship" element={ <AdminRoute><AdminAddScholarship />  </AdminRoute>} />
-        <Route
-          path="/admin/scholarships"
-          element={
-            <AdminRoute>
-              <AdminScholarshipLists />
-            </AdminRoute>
-  }
-/>
-<Route
-  path="/scholarships"
-  element={<StudentScholarships/>}
-/>
-      </Routes>
-    </BrowserRouter>
+        <Routes>
+
+          {/* Landing Page */}
+          <Route path="/" element={<ScholarshipHome />} />
+
+          {/* Welcome Page */}
+          <Route path="/welcome" element={<Welcome />} />
+
+          {/* Authentication */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+
+          {/* Eligibility */}
+          <Route path="/eligibility" element={<EligibilityForm />} />
+          <Route path="/result" element={<EligibilityResult />} />
+
+          {/* Student Scholarship Pages */}
+          <Route path="/scholarships" element={<StudentScholarships />} />
+          <Route path="/scholarships/:id" element={<ScholarshipDetail />} />
+
+          {/* ⭐ Document Upload Page */}
+          <Route path="/upload-documents" element={<DocumentUpload />} />
+
+          {/* Admin Pages */}
+          <Route
+            path="/admin/add-scholarship"
+            element={
+              <AdminRoute>
+                <AdminAddScholarship />
+              </AdminRoute>
+            }
+          />
+
+          <Route
+            path="/admin/scholarships"
+            element={
+              <AdminRoute>
+                <AdminScholarshipLists />
+              </AdminRoute>
+            }
+          />
+
+        </Routes>
+
+      </BrowserRouter>
+    </GoogleOAuthProvider>
   );
 }
 
 export default App;
-
-
-

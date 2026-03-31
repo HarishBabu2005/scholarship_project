@@ -5,6 +5,14 @@ const jwt = require("jsonwebtoken");
 exports.signup = async (req, res) => {
   const { name, email, password } = req.body;
 
+  if (password.length < 8) {
+    return res.status(400).json({ message: "Password must be at least 8 characters" });
+  }
+  const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/;
+  if (!specialCharRegex.test(password)) {
+    return res.status(400).json({ message: "Password must contain at least one special character" });
+  }
+
   const hashedPassword = await bcrypt.hash(password, 10);
   const user = await User.create({
     name,
