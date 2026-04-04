@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import AuthLayout from "../components/AuthLayout";
 import API from "../api/axios";
 import "../styles/theme.css";
-import { Navigate ,useNavigate} from "react-router-dom";
+import { Navigate } from "react-router-dom";
+import AdminNavbar from "../components/AdminNavbar";
 
 function AdminScholarshipList() {
- const navigate=useNavigate();
   const [scholarships, setScholarships] = useState([]);
 
   const fetchScholarships = async () => {
@@ -31,29 +31,15 @@ function AdminScholarshipList() {
   useEffect(() => {
     fetchScholarships();
   }, []);
+
   if (!localStorage.getItem("token")) {
-  return <Navigate to="/" />;
-}
-const handleLogout = () => {
-  localStorage.removeItem("token");
-  localStorage.removeItem("role");
-  localStorage.removeItem("eligibilityResult");
-  navigate("/");
-};
+    return <Navigate to="/" />;
+  }
 
   return (
     <AuthLayout>
-      <div className="card result-card">
-        <div style={{ textAlign: "right" }}>
-  <button
-    className="btn-outline"
-    style={{ fontSize: "14px" }}
-    onClick={handleLogout}
-  >
-    Logout
-  </button>
-</div>
-
+      <AdminNavbar />
+      <div className="card result-card" style={{ marginTop: "80px" }}>
         <h1>Scholarship List</h1>
         <p>Admin Panel</p>
 

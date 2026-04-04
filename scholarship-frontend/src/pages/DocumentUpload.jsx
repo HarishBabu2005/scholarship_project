@@ -31,8 +31,25 @@ const documentCategories = {
 function DocumentUpload() {
 
   const [files, setFiles] = useState({});
+  const [error, setError] = useState("");
 
   const handleFileChange = (docName, file) => {
+    setError(""); // Reset error
+    
+    if (!file) return;
+
+    // Check file format
+    if (file.type !== "application/pdf") {
+      setError(`Error in ${docName}: Only PDF files are allowed.`);
+      return;
+    }
+
+    // Check file size (300KB = 300 * 1024 bytes)
+    if (file.size > 300 * 1024) {
+      setError(`Error in ${docName}: File size must be within 300KB.`);
+      return;
+    }
+
     setFiles({
       ...files,
       [docName]: file
@@ -40,8 +57,12 @@ function DocumentUpload() {
   };
 
   const handleSubmit = () => {
+    if (error) {
+      alert("Please fix the errors before submitting.");
+      return;
+    }
     console.log(files);
-    alert("Documents Selected Successfully!");
+    alert("Documents Uploaded Successfully for Admin Verification!");
   };
 
   return (
@@ -52,6 +73,20 @@ function DocumentUpload() {
         <div style={glassCard}>
 
           <h2 style={title}>Scholarship Document Upload</h2>
+          
+          {error && (
+            <div style={{ 
+              background: "rgba(255, 77, 79, 0.2)", 
+              color: "#ff4d4f", 
+              padding: "10px", 
+              borderRadius: "8px", 
+              marginBottom: "20px",
+              textAlign: "center",
+              border: "1px solid #ff4d4f"
+            }}>
+              {error}
+            </div>
+          )}
 
           {Object.keys(documentCategories).map((category) => (
 
@@ -89,7 +124,7 @@ function DocumentUpload() {
                       <td style={td}>
                         <input
                           type="file"
-                          accept=".pdf,.jpg,.png"
+                          accept=".pdf"
                           style={fileInput}
                           onChange={(e) =>
                             handleFileChange(doc, e.target.files[0])
@@ -110,7 +145,15 @@ function DocumentUpload() {
           ))}
 
           <div style={{ textAlign: "center", marginTop: "35px" }}>
-            <button onClick={handleSubmit} style={buttonStyle}>
+            <button 
+              onClick={handleSubmit} 
+              style={{
+                ...buttonStyle,
+                opacity: error ? 0.6 : 1,
+                cursor: error ? "not-allowed" : "pointer"
+              }}
+              disabled={!!error}
+            >
               Submit Documents
             </button>
           </div>

@@ -9,6 +9,16 @@ const studentProfileSchema = new mongoose.Schema({
   education: String,
   marks: Number,
   disability: String,
+  documents: [{
+    name: String,
+    fileUrl: String,
+    status: { 
+      type: String, 
+      enum: ['Pending', 'Approved', 'Rejected'], 
+      default: 'Pending' 
+    },
+    adminRemarks: String
+  }]
 });
 
 module.exports = mongoose.model("StudentProfile", studentProfileSchema);

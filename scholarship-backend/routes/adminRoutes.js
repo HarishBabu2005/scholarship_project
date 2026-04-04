@@ -3,7 +3,9 @@ const router = express.Router();
 const {
   addScholarship,
   getScholarships,
-  deleteScholarship
+  deleteScholarship,
+  getStudentSubmissions,
+  verifyDocument
 } = require("../controllers/adminController");
 
 const { protect, adminOnly } = require("../middleware/authMiddleware");
@@ -16,4 +18,8 @@ router.delete(
   adminOnly,
   deleteScholarship
 );
+
+router.get("/submissions", protect, adminOnly, getStudentSubmissions);
+router.put("/submission/:submissionId/document/:docName", protect, adminOnly, verifyDocument);
+
 module.exports = router;

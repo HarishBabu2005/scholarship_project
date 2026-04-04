@@ -11,6 +11,8 @@ import AdminScholarshipLists from "./pages/AdminScholarshipList";
 import StudentScholarships from "./pages/StudentScholarships";
 import ScholarshipDetail from "./pages/ScholarshipDetail";
 import DocumentUpload from "./pages/DocumentUpload";   // ⭐ NEW IMPORT
+import AdminDocumentVerification from "./pages/AdminDocumentVerification"; // ⭐ NEW IMPORT
+import AdminDashboard from "./pages/AdminDashboard"; // ⭐ NEW IMPORT
 
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
@@ -44,6 +46,15 @@ function App() {
 
           {/* Admin Pages */}
           <Route
+            path="/admin"
+            element={
+              <AdminRoute>
+                <AdminDashboard />
+              </AdminRoute>
+            }
+          />
+
+          <Route
             path="/admin/add-scholarship"
             element={
               <AdminRoute>
@@ -57,6 +68,16 @@ function App() {
             element={
               <AdminRoute>
                 <AdminScholarshipLists />
+              </AdminRoute>
+            }
+          />
+
+          {/* ⭐ Admin Document Verification */}
+          <Route
+            path="/admin/verify-documents"
+            element={
+              <AdminRoute>
+                <AdminDocumentVerification />
               </AdminRoute>
             }
           />

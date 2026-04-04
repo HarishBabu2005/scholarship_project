@@ -2,10 +2,9 @@ import { useState } from "react";
 import AuthLayout from "../components/AuthLayout";
 import API from "../api/axios";
 import "../styles/theme.css";
-import { Navigate ,useNavigate} from "react-router-dom";
+import { Navigate, Link } from "react-router-dom";
 
 function AdminAddScholarship() {
-    const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     incomeLimit: "",
@@ -31,31 +30,21 @@ function AdminAddScholarship() {
       alert("Failed to add scholarship");
     }
   };
+
   if (!localStorage.getItem("token")) {
-  return <Navigate to="/" />;
-}
-const handleLogout = () => {
-  localStorage.removeItem("token");
-  localStorage.removeItem("role");
-  localStorage.removeItem("eligibilityResult");
-  navigate("/");
-};
+    return <Navigate to="/" />;
+  }
 
   return (
     <AuthLayout>
       <div className="card">
-        <div style={{ textAlign: "right" }}>
-  <button
-    className="btn-outline"
-    style={{ fontSize: "14px" }}
-    onClick={handleLogout}
-  >
-    Logout
-  </button>
-</div>
+        <div style={{ textAlign: "left", marginBottom: "20px" }}>
+          <Link to="/admin" style={{ textDecoration: "none", color: "#2563eb", fontWeight: "600", fontSize: "14px" }}>
+            Back to Dashboard
+          </Link>
+        </div>
 
         <h1>Add Scholarship</h1>
-        <p>Admin Panel</p>
 
         <form onSubmit={handleSubmit}>
           <div className="input-group">
