@@ -1,0 +1,20 @@
+commit a2f022f9ef2182af277436f3bd3f3a0614640e61
+Author: Harishbabu2005 <harishbabups2005@gmail.com>
+Date:   Fri Mar 20 12:56:25 2026 +0530
+
+    feat: Implement core scholarship application with user authentication, routing, and scholarship data display.
+
+commit 767234f70b045f9072f986a9a63d92a415727759
+Author: Harishbabu2005 <harishbabups2005@gmail.com>
+Date:   Tue Feb 3 21:49:17 2026 +0530
+
+    design is changed
+
+commit 6e4e98ede49b67fd38c3970b236dae80dfb7bc4d
+Merge: ef8a4d8 7e2af7f
+Author: HarishBabu2005 <harishbabups2005@gmail.com>
+Date:   Wed Jan 28 10:08:21 2026 +0530
+
+    Merge pull request #1 from gobhikasri/my_first_check
+    
+    Replaced old code with updated frontend and backend

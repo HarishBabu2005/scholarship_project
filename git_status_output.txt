@@ -1,0 +1,18 @@
+On branch my_first_check
+Your branch is up to date with 'origin/my_first_check'.
+
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+	modified:   scholarship-frontend/package-lock.json
+	modified:   scholarship-frontend/package.json
+	modified:   scholarship-frontend/src/App.js
+	modified:   scholarship-frontend/src/data/scholarships.js
+	modified:   scholarship-frontend/src/pages/Login.jsx
+	modified:   scholarship-frontend/src/pages/Signup.jsx
+	modified:   scholarship-frontend/src/styles/theme.css
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	git_log_output.txt
+	git_status_output.txt
+
