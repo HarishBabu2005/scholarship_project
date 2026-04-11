@@ -73,16 +73,33 @@ const handleLogout = () => {
   return (
     
     <AuthLayout>
+      <button
+        onClick={handleLogout}
+        style={{
+          position: "absolute",
+          top: "30px",
+          right: "40px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          height: "40px",
+          boxSizing: "border-box",
+          padding: "0 20px",
+          background: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
+          color: "white",
+          border: "none",
+          borderRadius: "12px",
+          cursor: "pointer",
+          fontSize: "14px",
+          fontWeight: "700",
+          boxShadow: "0 10px 20px rgba(220, 38, 38, 0.3)",
+          zIndex: 10,
+        }}
+      >
+        Logout
+      </button>
+
       <div className="card">
-        <div style={{ textAlign: "right" }}>
-  <button
-    className="btn-outline"
-    style={{ fontSize: "14px" }}
-    onClick={handleLogout}
-  >
-    Logout
-  </button>
-</div>
 
         <h1>Check Scholarship Eligibility</h1>
         <p>Enter your details to find eligible scholarships</p>

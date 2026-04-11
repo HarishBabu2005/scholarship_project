@@ -15,12 +15,19 @@ function Login() {
   const navigate = useNavigate();
 
   const loginWithGoogle = useGoogleLogin({
-    onSuccess: (tokenResponse) => {
-      console.log("Google login successful:", tokenResponse);
-      alert("Google login successful! This is a mock response, you will need to wire it up with the backend API logic later.");
+    onSuccess: async (tokenResponse) => {
+      try {
+        const res = await API.post("/auth/google-login", {
+          accessToken: tokenResponse.access_token,
+        });
+        localStorage.setItem("token", res.data.token);
+        localStorage.setItem("role", res.data.user.role);
+        navigate("/scholarships");
+      } catch (error) {
+        alert(error.response?.data?.message || "Google login failed");
+      }
     },
     onError: () => {
-      console.log("Google login failed");
       alert("Google login failed.");
     },
   });
@@ -95,6 +102,24 @@ function Login() {
             {errors.password && (
               <div className="error-text">{errors.password}</div>
             )}
+          </div>
+
+          <div style={{ textAlign: "right", marginBottom: "12px" }}>
+            <a
+              href="/forgot-password"
+              onClick={(e) => {
+                e.preventDefault();
+                navigate("/forgot-password");
+              }}
+              style={{
+                color: "#2563eb",
+                fontSize: "13px",
+                textDecoration: "none",
+                fontWeight: "500",
+              }}
+            >
+              Forgot Password?
+            </a>
           </div>
 
           <button type="submit" className="btn-primary">

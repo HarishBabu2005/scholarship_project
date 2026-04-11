@@ -1,5 +1,7 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import AuthLayout from "../components/AuthLayout";
+import API from "../api/axios";
 
 const documentCategories = {
   Personal: [
@@ -21,7 +23,6 @@ const documentCategories = {
     "Community Certificate"
   ],
 
-  /* ✅ NEW CATEGORY ADDED */
   "Bank Details": [
     "Bank Passbook",
     "Aadhar Seeding Proof"
@@ -29,49 +30,94 @@ const documentCategories = {
 };
 
 function DocumentUpload() {
-
+  const navigate = useNavigate();
   const [files, setFiles] = useState({});
   const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   const handleFileChange = (docName, file) => {
-    setError(""); // Reset error
-    
+    setError("");
     if (!file) return;
-
-    // Check file format
     if (file.type !== "application/pdf") {
       setError(`Error in ${docName}: Only PDF files are allowed.`);
       return;
     }
-
-    // Check file size (300KB = 300 * 1024 bytes)
     if (file.size > 300 * 1024) {
       setError(`Error in ${docName}: File size must be within 300KB.`);
       return;
     }
-
-    setFiles({
-      ...files,
-      [docName]: file
-    });
+    setFiles({ ...files, [docName]: file });
   };
 
-  const handleSubmit = () => {
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    localStorage.removeItem("eligibilityResult");
+    navigate("/");
+  };
+
+  const handleSubmit = async () => {
     if (error) {
       alert("Please fix the errors before submitting.");
       return;
     }
-    console.log(files);
-    alert("Documents Uploaded Successfully for Admin Verification!");
+
+    const fileKeys = Object.keys(files);
+    if (fileKeys.length === 0) {
+      alert("Please upload at least one document.");
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const formData = new FormData();
+      fileKeys.forEach((docName) => {
+        formData.append(docName, files[docName]);
+      });
+
+      await API.post("/student/submit-documents", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      alert("Documents submitted successfully for admin verification!");
+      navigate("/scholarships");
+    } catch (err) {
+      alert(err.response?.data?.message || "Failed to submit documents");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
     <AuthLayout>
+      <button
+        onClick={handleLogout}
+        style={{
+          position: "absolute",
+          top: "30px",
+          right: "40px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          height: "40px",
+          boxSizing: "border-box",
+          padding: "0 20px",
+          background: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
+          color: "white",
+          border: "none",
+          borderRadius: "12px",
+          cursor: "pointer",
+          fontSize: "14px",
+          fontWeight: "700",
+          boxShadow: "0 10px 20px rgba(220, 38, 38, 0.3)",
+          zIndex: 10,
+        }}
+      >
+        Logout
+      </button>
 
       <div style={pageStyle}>
-
         <div style={glassCard}>
-
           <h2 style={title}>Scholarship Document Upload</h2>
           
           {error && (
@@ -89,13 +135,9 @@ function DocumentUpload() {
           )}
 
           {Object.keys(documentCategories).map((category) => (
-
             <div key={category} style={categoryBox}>
-
               <h3 style={categoryTitle}>{category}</h3>
-
               <table style={tableStyle}>
-
                 <thead>
                   <tr>
                     <th style={{ ...th, width: "8%" }}>S.No</th>
@@ -104,23 +146,16 @@ function DocumentUpload() {
                     <th style={{ ...th, width: "30%" }}>Upload</th>
                   </tr>
                 </thead>
-
                 <tbody>
-
                   {documentCategories[category].map((doc, index) => (
-
                     <tr key={doc} style={rowStyle}>
-
                       <td style={td}>{index + 1}</td>
-
                       <td style={td}>{doc}</td>
-
                       <td style={td}>
                         {files[doc]
                           ? <span style={{ color: "#00c97f", fontWeight: "500" }}>Uploaded</span>
                           : <span style={{ color: "#ff4d4f", fontWeight: "500" }}>Not Uploaded</span>}
                       </td>
-
                       <td style={td}>
                         <input
                           type="file"
@@ -131,17 +166,11 @@ function DocumentUpload() {
                           }
                         />
                       </td>
-
                     </tr>
-
                   ))}
-
                 </tbody>
-
               </table>
-
             </div>
-
           ))}
 
           <div style={{ textAlign: "center", marginTop: "35px" }}>
@@ -149,24 +178,20 @@ function DocumentUpload() {
               onClick={handleSubmit} 
               style={{
                 ...buttonStyle,
-                opacity: error ? 0.6 : 1,
-                cursor: error ? "not-allowed" : "pointer"
+                opacity: (error || submitting) ? 0.6 : 1,
+                cursor: (error || submitting) ? "not-allowed" : "pointer"
               }}
-              disabled={!!error}
+              disabled={!!error || submitting}
             >
-              Submit Documents
+              {submitting ? "Submitting..." : "Submit Documents"}
             </button>
           </div>
-
         </div>
-
       </div>
-
     </AuthLayout>
   );
 }
 
-/* PAGE WRAPPER */
 const pageStyle = {
   width: "100%",
   display: "flex",
@@ -175,7 +200,6 @@ const pageStyle = {
   padding: "40px 20px"
 };
 
-/* GLASS CARD */
 const glassCard = {
   width: "100%",
   maxWidth: "1100px",
@@ -205,7 +229,6 @@ const categoryTitle = {
   color: "#1e40af"
 };
 
-/* ✅ FIXED TABLE ALIGNMENT */
 const tableStyle = {
   width: "100%",
   borderCollapse: "collapse",
@@ -228,7 +251,6 @@ const rowStyle = {
   transition: "background 0.3s"
 };
 
-/* ✅ FULL WIDTH INPUT FOR ALIGNMENT */
 const fileInput = {
   width: "100%",
   padding: "6px",

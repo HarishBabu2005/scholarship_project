@@ -13,6 +13,9 @@ import ScholarshipDetail from "./pages/ScholarshipDetail";
 import DocumentUpload from "./pages/DocumentUpload";   // ⭐ NEW IMPORT
 import AdminDocumentVerification from "./pages/AdminDocumentVerification"; // ⭐ NEW IMPORT
 import AdminDashboard from "./pages/AdminDashboard"; // ⭐ NEW IMPORT
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
+import Notifications from "./pages/Notifications";
 
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
@@ -32,6 +35,8 @@ function App() {
           {/* Authentication */}
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
 
           {/* Eligibility */}
           <Route path="/eligibility" element={<EligibilityForm />} />
@@ -41,8 +46,9 @@ function App() {
           <Route path="/scholarships" element={<StudentScholarships />} />
           <Route path="/scholarships/:id" element={<ScholarshipDetail />} />
 
-          {/* ⭐ Document Upload Page */}
+          {/* Document Upload & Notifications */}
           <Route path="/upload-documents" element={<DocumentUpload />} />
+          <Route path="/notifications" element={<Notifications />} />
 
           {/* Admin Pages */}
           <Route

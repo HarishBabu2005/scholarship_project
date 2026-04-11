@@ -90,7 +90,7 @@ function AdminDocumentVerification() {
                             <span style={getStatusStyle(doc.status)}>{doc.status}</span>
                           </td>
                           <td style={td}>
-                            <a href={doc.url} target="_blank" rel="noreferrer" style={viewLink}>View PDF</a>
+                            <a href={`http://localhost:5000${doc.fileUrl || doc.url}`} target="_blank" rel="noreferrer" style={viewLink}>View PDF</a>
                           </td>
                           <td style={td}>
                             <input 

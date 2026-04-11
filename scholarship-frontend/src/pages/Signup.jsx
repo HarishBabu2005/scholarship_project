@@ -17,12 +17,19 @@ function Signup() {
   const navigate = useNavigate();
 
   const signupWithGoogle = useGoogleLogin({
-    onSuccess: (tokenResponse) => {
-      console.log("Google signup successful:", tokenResponse);
-      alert("Google signup successful! This is a mock response, you will need to wire it up with the backend API logic later.");
+    onSuccess: async (tokenResponse) => {
+      try {
+        const res = await API.post("/auth/google-login", {
+          accessToken: tokenResponse.access_token,
+        });
+        localStorage.setItem("token", res.data.token);
+        localStorage.setItem("role", res.data.user.role);
+        navigate("/scholarships");
+      } catch (error) {
+        alert(error.response?.data?.message || "Google signup failed");
+      }
     },
     onError: () => {
-      console.log("Google signup failed");
       alert("Google signup failed.");
     },
   });
