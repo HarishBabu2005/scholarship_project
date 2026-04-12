@@ -118,7 +118,41 @@ function DocumentUpload() {
 
       <div style={pageStyle}>
         <div style={glassCard}>
+          <button
+            onClick={() => navigate("/scholarships")}
+            style={{
+              padding: "8px 15px",
+              fontSize: "14px",
+              borderRadius: "8px",
+              border: "1px solid rgba(30, 58, 138, 0.3)",
+              background: "rgba(255, 255, 255, 0.4)",
+              color: "#1e3a8a",
+              cursor: "pointer",
+              marginBottom: "20px",
+              fontWeight: "600"
+            }}
+          >
+            &larr; Back to Scholarships
+          </button>
           <h2 style={title}>Scholarship Document Upload</h2>
+          <p style={{ 
+            textAlign: "center", 
+            color: "#1e3a8a", 
+            fontSize: "14px", 
+            marginTop: "-20px", 
+            marginBottom: "30px", 
+            fontWeight: "500",
+            background: "rgba(255, 255, 255, 0.3)",
+            padding: "8px",
+            borderRadius: "8px",
+            display: "inline-block",
+            position: "relative",
+            left: "50%",
+            transform: "translateX(-50%)",
+            border: "1px dashed rgba(30, 58, 138, 0.2)"
+          }}>
+            <span style={{ color: "#dc2626", fontWeight: "bold" }}>Note:</span> All documents must be in <span style={{ fontWeight: "bold" }}>PDF</span> format and size within <span style={{ fontWeight: "bold" }}>300KB</span>.
+          </p>
           
           {error && (
             <div style={{ 

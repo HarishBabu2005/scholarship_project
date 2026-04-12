@@ -1,6 +1,18 @@
+import { useNavigate } from "react-router-dom";
 import "./ScholarshipHome.css";
 
 const ScholarshipHome = () => {
+  const navigate = useNavigate();
+
+  const handleAction = (path) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      navigate(path);
+    } else {
+      navigate("/login");
+    }
+  };
+
   return (
     <div
       className="scholarship-hero"
@@ -35,8 +47,18 @@ const ScholarshipHome = () => {
         </p>
 
         <div className="hero-actions">
-          <button className="primary-btn">Explore Scholarships</button>
-          <button className="secondary-btn">Check Eligibility</button>
+          <button
+            className="primary-btn"
+            onClick={() => handleAction("/scholarships")}
+          >
+            Explore Scholarships
+          </button>
+          <button
+            className="secondary-btn"
+            onClick={() => handleAction("/eligibility")}
+          >
+            Check Eligibility
+          </button>
         </div>
       </div>
     </div>

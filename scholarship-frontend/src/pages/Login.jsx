@@ -22,7 +22,13 @@ function Login() {
         });
         localStorage.setItem("token", res.data.token);
         localStorage.setItem("role", res.data.user.role);
-        navigate("/scholarships");
+
+        // ✅ Divert based on role
+        if (res.data.user.role === "admin") {
+          navigate("/admin");
+        } else {
+          navigate("/scholarships");
+        }
       } catch (error) {
         alert(error.response?.data?.message || "Google login failed");
       }
@@ -59,7 +65,13 @@ function Login() {
         // Save JWT token
         localStorage.setItem("token", res.data.token);
         localStorage.setItem("role", res.data.user.role);
-        navigate("/scholarships");
+
+        // ✅ Divert based on role
+        if (res.data.user.role === "admin") {
+          navigate("/admin");
+        } else {
+          navigate("/scholarships");
+        }
       } catch (error) {
         alert(error.response?.data?.message || "Login failed");
       }
@@ -104,7 +116,29 @@ function Login() {
             )}
           </div>
 
-          <div style={{ textAlign: "right", marginBottom: "12px" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: "16px",
+            }}
+          >
+            <a
+              href="/signup"
+              onClick={(e) => {
+                e.preventDefault();
+                navigate("/signup");
+              }}
+              style={{
+                color: "#2563eb",
+                fontSize: "13px",
+                textDecoration: "none",
+                fontWeight: "500",
+              }}
+            >
+              Don't have an account? Sign up
+            </a>
             <a
               href="/forgot-password"
               onClick={(e) => {

@@ -71,7 +71,6 @@ const handleLogout = () => {
 
 
   return (
-    
     <AuthLayout>
       <button
         onClick={handleLogout}
@@ -99,170 +98,222 @@ const handleLogout = () => {
         Logout
       </button>
 
-      <div className="card">
-
-        <h1>Check Scholarship Eligibility</h1>
-        <p>Enter your details to find eligible scholarships</p>
-        
-        {role === "admin" && (
+      <div style={pageStyle}>
+        <div style={glassCard}>
           <button
             className="btn-outline"
-            style={{ marginBottom: "15px" }}
-            onClick={() => navigate("/admin/add-scholarship")}
+            onClick={() => navigate("/scholarships")}
+            style={{
+              width: "auto",
+              marginBottom: "20px",
+              padding: "8px 15px",
+              fontSize: "14px",
+              background: "rgba(255, 255, 255, 0.4)",
+              color: "#1e3a8a",
+              fontWeight: "600"
+            }}
           >
-            Go to Admin Panel
+            &larr; Back to Scholarships
           </button>
-        )}
-        <button
-  className="btn-outline"
-  style={{ marginBottom: "15px" }}
-  onClick={() => navigate("/scholarships")}
->
-  View All Scholarships
-</button>
 
-        {role === "admin" && (
-              <button
-                className="btn-outline"
-                style={{ marginBottom: "15px" }}
-                onClick={() => navigate("/admin/scholarships")}
+          <h1 style={titleStyle}>Check Scholarship Eligibility</h1>
+          <p style={{ textAlign: "center", marginBottom: "30px", color: "#1e3a8a", opacity: 0.8 }}>
+            Enter your details to find eligible scholarships
+          </p>
+
+          <div style={{ display: "flex", gap: "10px", justifyContent: "center", marginBottom: "30px" }}>
+            {role === "admin" && (
+              <>
+                <button
+                  className="btn-outline"
+                  onClick={() => navigate("/admin/add-scholarship")}
+                  style={{ width: "auto" }}
+                >
+                  Go to Admin Panel
+                </button>
+                <button
+                  className="btn-outline"
+                  onClick={() => navigate("/admin/scholarships")}
+                  style={{ width: "auto" }}
+                >
+                  View Scholarships
+                </button>
+              </>
+            )}
+          </div>
+
+          <form onSubmit={handleSubmit} style={formGrid}>
+            {/* Name */}
+            <div className="input-group">
+              <label>Full Name</label>
+              <input
+                type="text"
+                value={formData.name}
+                onChange={(e) =>
+                  setFormData({ ...formData, name: e.target.value })
+                }
+              />
+              {errors.name && <div className="error-text">{errors.name}</div>}
+            </div>
+
+            {/* DOB */}
+            <div className="input-group">
+              <label>Date of Birth</label>
+              <input
+                type="date"
+                value={formData.dob}
+                onChange={(e) =>
+                  setFormData({ ...formData, dob: e.target.value })
+                }
+              />
+              {errors.dob && <div className="error-text">{errors.dob}</div>}
+            </div>
+
+            {/* Gender */}
+            <div className="input-group">
+              <label>Gender</label>
+              <select
+                value={formData.gender}
+                onChange={(e) =>
+                  setFormData({ ...formData, gender: e.target.value })
+                }
               >
-                View Scholarships
+                <option value="">Select</option>
+                <option>Male</option>
+                <option>Female</option>
+                <option>Other</option>
+              </select>
+              {errors.gender && <div className="error-text">{errors.gender}</div>}
+            </div>
+
+            {/* Category */}
+            <div className="input-group">
+              <label>Category</label>
+              <select
+                value={formData.category}
+                onChange={(e) =>
+                  setFormData({ ...formData, category: e.target.value })
+                }
+              >
+                <option value="">Select</option>
+                <option>SC</option>
+                <option>ST</option>
+                <option>OBC</option>
+                <option>General</option>
+              </select>
+              {errors.category && (
+                <div className="error-text">{errors.category}</div>
+              )}
+            </div>
+
+            {/* Income */}
+            <div className="input-group">
+              <label>Annual Family Income (₹)</label>
+              <input
+                type="number"
+                value={formData.income}
+                onChange={(e) =>
+                  setFormData({ ...formData, income: e.target.value })
+                }
+              />
+              {errors.income && <div className="error-text">{errors.income}</div>}
+            </div>
+
+            {/* Education */}
+            <div className="input-group">
+              <label>Education Level</label>
+              <select
+                value={formData.education}
+                onChange={(e) =>
+                  setFormData({ ...formData, education: e.target.value })
+                }
+              >
+                <option value="">Select</option>
+                <option>High School</option>
+                <option>Diploma</option>
+                <option>Undergraduate</option>
+                <option>Postgraduate</option>
+              </select>
+              {errors.education && (
+                <div className="error-text">{errors.education}</div>
+              )}
+            </div>
+
+            {/* Marks */}
+            <div className="input-group">
+              <label>Marks / CGPA</label>
+              <input
+                type="number"
+                step="0.01"
+                value={formData.marks}
+                onChange={(e) =>
+                  setFormData({ ...formData, marks: e.target.value })
+                }
+              />
+              {errors.marks && <div className="error-text">{errors.marks}</div>}
+            </div>
+
+            {/* Disability */}
+            <div className="input-group">
+              <label>Disability</label>
+              <select
+                value={formData.disability}
+                onChange={(e) =>
+                  setFormData({ ...formData, disability: e.target.value })
+                }
+              >
+                <option value="no">No</option>
+                <option value="yes">Yes</option>
+              </select>
+            </div>
+
+            <div style={{ gridColumn: "span 2", textAlign: "center", marginTop: "20px" }}>
+              <button type="submit" className="btn-primary" style={{ padding: "12px 40px", width: "auto" }}>
+                Check Eligibility
               </button>
-)}
-
-        <form onSubmit={handleSubmit}>
-          {/* Name */}
-          <div className="input-group">
-            <label>Full Name</label>
-            <input
-              type="text"
-              value={formData.name}
-              onChange={(e) =>
-                setFormData({ ...formData, name: e.target.value })
-              }
-            />
-            {errors.name && <div className="error-text">{errors.name}</div>}
-          </div>
-
-          {/* DOB */}
-          <div className="input-group">
-            <label>Date of Birth</label>
-            <input
-              type="date"
-              value={formData.dob}
-              onChange={(e) =>
-                setFormData({ ...formData, dob: e.target.value })
-              }
-            />
-            {errors.dob && <div className="error-text">{errors.dob}</div>}
-          </div>
-
-          {/* Gender */}
-          <div className="input-group">
-            <label>Gender</label>
-            <select
-              value={formData.gender}
-              onChange={(e) =>
-                setFormData({ ...formData, gender: e.target.value })
-              }
-            >
-              <option value="">Select</option>
-              <option>Male</option>
-              <option>Female</option>
-              <option>Other</option>
-            </select>
-            {errors.gender && <div className="error-text">{errors.gender}</div>}
-          </div>
-
-          {/* Category */}
-          <div className="input-group">
-            <label>Category</label>
-            <select
-              value={formData.category}
-              onChange={(e) =>
-                setFormData({ ...formData, category: e.target.value })
-              }
-            >
-              <option value="">Select</option>
-              <option>SC</option>
-              <option>ST</option>
-              <option>OBC</option>
-              <option>General</option>
-            </select>
-            {errors.category && (
-              <div className="error-text">{errors.category}</div>
-            )}
-          </div>
-
-          {/* Income */}
-          <div className="input-group">
-            <label>Annual Family Income (₹)</label>
-            <input
-              type="number"
-              value={formData.income}
-              onChange={(e) =>
-                setFormData({ ...formData, income: e.target.value })
-              }
-            />
-            {errors.income && <div className="error-text">{errors.income}</div>}
-          </div>
-
-          {/* Education */}
-          <div className="input-group">
-            <label>Education Level</label>
-            <select
-              value={formData.education}
-              onChange={(e) =>
-                setFormData({ ...formData, education: e.target.value })
-              }
-            >
-              <option value="">Select</option>
-              <option>High School</option>
-              <option>Diploma</option>
-              <option>Undergraduate</option>
-              <option>Postgraduate</option>
-            </select>
-            {errors.education && (
-              <div className="error-text">{errors.education}</div>
-            )}
-          </div>
-
-          {/* Marks */}
-          <div className="input-group">
-            <label>Marks / CGPA</label>
-            <input
-              type="number"
-              step="0.01"
-              value={formData.marks}
-              onChange={(e) =>
-                setFormData({ ...formData, marks: e.target.value })
-              }
-            />
-            {errors.marks && <div className="error-text">{errors.marks}</div>}
-          </div>
-
-          {/* Disability */}
-          <div className="input-group">
-            <label>Disability</label>
-            <select
-              value={formData.disability}
-              onChange={(e) =>
-                setFormData({ ...formData, disability: e.target.value })
-              }
-            >
-              <option value="no">No</option>
-              <option value="yes">Yes</option>
-            </select>
-          </div>
-
-          <button type="submit" className="btn-primary">
-            Check Eligibility
-          </button>
-        </form>
+            </div>
+          </form>
+        </div>
       </div>
     </AuthLayout>
   );
 }
+
+const pageStyle = {
+  width: "100%",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "flex-start",
+  padding: "40px 20px"
+};
+
+const glassCard = {
+  width: "100%",
+  maxWidth: "1100px",
+  padding: "40px",
+  borderRadius: "20px",
+  background: "rgba(255,255,255,0.15)",
+  backdropFilter: "blur(15px)",
+  border: "1px solid rgba(255,255,255,0.25)",
+  boxShadow: "0 10px 35px rgba(0,0,0,0.25)",
+  maxHeight: "85vh",
+  overflowY: "auto"
+};
+
+const titleStyle = {
+  textAlign: "center",
+  marginBottom: "10px",
+  color: "#1e3a8a",
+  fontWeight: "600",
+  fontSize: "28px"
+};
+
+const formGrid = {
+  display: "grid",
+  gridTemplateColumns: "repeat(2, 1fr)",
+  gap: "20px",
+  maxWidth: "800px",
+  margin: "0 auto"
+};
 
 export default EligibilityForm;
