@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import AuthLayout from "../components/AuthLayout";
 import AdminNavbar from "../components/AdminNavbar";
 import API from "../api/axios";
@@ -8,7 +8,7 @@ function AdminDocumentVerification() {
   const [selectedSubmission, setSelectedSubmission] = useState(null);
   const [remarks, setRemarks] = useState({});
 
-  const fetchSubmissions = async () => {
+  const fetchSubmissions = useCallback(async () => {
     try {
       const res = await API.get("/admin/submissions");
       setSubmissions(res.data);
@@ -19,11 +19,11 @@ function AdminDocumentVerification() {
     } catch (error) {
       console.error("Failed to fetch submissions", error);
     }
-  };
+  }, [selectedSubmission]);
 
   useEffect(() => {
     fetchSubmissions();
-  }, []);
+  }, [fetchSubmissions]);
 
   const handleVerify = async (submissionId, docName, status) => {
     try {

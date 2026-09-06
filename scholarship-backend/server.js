@@ -27,6 +27,8 @@ app.use("/api/eligibility", require("./routes/eligibilityRoutes"));
 app.use("/api/admin", require("./routes/adminRoutes"));
 app.use("/api/notifications", require("./routes/notificationRoutes"));
 app.use("/api/student", require("./routes/studentRoutes"));
+app.use("/api/applications", require("./routes/applicationRoutes"));
+
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

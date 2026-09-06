@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { protect } = require("../middleware/authMiddleware");
-const { submitDocuments } = require("../controllers/studentController");
+const { submitDocuments, getProfile, streamDocument } = require("../controllers/studentController");
 const multer = require("multer");
 const path = require("path");
 
@@ -38,4 +38,8 @@ router.post(
   submitDocuments
 );
 
+router.get("/profile", protect, getProfile);
+router.get("/document/:filename", protect, streamDocument);
+
 module.exports = router;
+

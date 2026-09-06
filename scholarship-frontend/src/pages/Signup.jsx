@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthLayout from "../components/AuthLayout";
 import API from "../api/axios";
@@ -15,6 +15,16 @@ function Signup() {
 
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
+
+  useEffect(() => {
+    setFormData({
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    });
+    setErrors({});
+  }, []);
 
   const signupWithGoogle = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
@@ -34,7 +44,6 @@ function Signup() {
     },
   });
 
-  // ✅ Validation function
   const validate = () => {
     let temp = {};
 
@@ -63,7 +72,6 @@ function Signup() {
     return Object.keys(temp).length === 0;
   };
 
-  // ✅ Submit handler
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -89,14 +97,14 @@ function Signup() {
         <h1>Sign Up</h1>
         <p>Create your scholarship account</p>
 
-        {/* ✅ onSubmit added */}
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} autoComplete="off">
           <div className="input-group">
             <label>Full Name</label>
             <input
               type="text"
               placeholder="Enter your full name"
               value={formData.name}
+              autoComplete="off"
               onChange={(e) =>
                 setFormData({ ...formData, name: e.target.value })
               }
@@ -112,6 +120,7 @@ function Signup() {
               type="email"
               placeholder="Enter your email"
               value={formData.email}
+              autoComplete="off"
               onChange={(e) =>
                 setFormData({ ...formData, email: e.target.value })
               }
@@ -127,11 +136,11 @@ function Signup() {
               type="password"
               placeholder="Create password"
               value={formData.password}
+              autoComplete="new-password"
               onChange={(e) => {
                 const newPassword = e.target.value;
                 setFormData({ ...formData, password: newPassword });
 
-                // Real-time validation
                 let passError = "";
                 const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/;
 
@@ -157,6 +166,7 @@ function Signup() {
               type="password"
               placeholder="Re-enter password"
               value={formData.confirmPassword}
+              autoComplete="new-password"
               onChange={(e) =>
                 setFormData({
                   ...formData,
@@ -188,6 +198,24 @@ function Signup() {
           </svg>
           Sign up with Google
         </button>
+
+        <div style={{ marginTop: "22px", fontSize: "14px", color: "#374151" }}>
+          Already have an account?{" "}
+          <a
+            href="/login"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate("/login");
+            }}
+            style={{
+              color: "#2563eb",
+              fontWeight: "700",
+              textDecoration: "none",
+            }}
+          >
+            Log in
+          </a>
+        </div>
       </div>
     </AuthLayout>
   );

@@ -1,4 +1,6 @@
 const StudentProfile = require("../models/StudentProfile");
+const path = require("path");
+const fs = require("fs");
 
 exports.submitDocuments = async (req, res) => {
   try {
@@ -49,3 +51,43 @@ exports.submitDocuments = async (req, res) => {
     res.status(500).json({ message: "Failed to submit documents" });
   }
 };
+
+exports.getProfile = async (req, res) => {
+  try {
+    const profile = await StudentProfile.findOne({ userId: req.user.id });
+    res.json(profile || { documents: [] });
+  } catch (error) {
+    console.error("Get profile error:", error);
+    res.status(500).json({ message: "Error fetching student profile" });
+  }
+};
+
+exports.streamDocument = async (req, res) => {
+  try {
+    const filename = req.params.filename;
+    const filePath = path.join(__dirname, "../uploads", filename);
+
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ message: "File not found" });
+    }
+
+    // Check authorization: Admin OR file owner
+    if (req.user.role !== "admin") {
+      const targetUrl = `/uploads/${filename}`;
+      const profile = await StudentProfile.findOne({
+        userId: req.user.id,
+        "documents.fileUrl": targetUrl,
+      });
+
+      if (!profile) {
+        return res.status(403).json({ message: "Not authorized to access this document" });
+      }
+    }
+
+    res.sendFile(filePath);
+  } catch (error) {
+    console.error("Stream document error:", error);
+    res.status(500).json({ message: "Error streaming document" });
+  }
+};
+

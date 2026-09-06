@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthLayout from "../components/AuthLayout";
 import API from "../api/axios";
@@ -14,6 +14,12 @@ function Login() {
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
+  // Reset email/password input fields whenever entering Login page
+  useEffect(() => {
+    setFormData({ email: "", password: "" });
+    setErrors({});
+  }, []);
+
   const loginWithGoogle = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       try {
@@ -23,7 +29,6 @@ function Login() {
         localStorage.setItem("token", res.data.token);
         localStorage.setItem("role", res.data.user.role);
 
-        // ✅ Divert based on role
         if (res.data.user.role === "admin") {
           navigate("/admin");
         } else {
@@ -38,7 +43,6 @@ function Login() {
     },
   });
 
-  // ✅ Validation function (THIS WAS MISSING)
   const validate = () => {
     let temp = {};
 
@@ -54,7 +58,6 @@ function Login() {
     return Object.keys(temp).length === 0;
   };
 
-  // ✅ Submit handler
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -66,7 +69,6 @@ function Login() {
         localStorage.setItem("token", res.data.token);
         localStorage.setItem("role", res.data.user.role);
 
-        // ✅ Divert based on role
         if (res.data.user.role === "admin") {
           navigate("/admin");
         } else {
@@ -84,14 +86,14 @@ function Login() {
         <h1>Login</h1>
         <p>Access your scholarship dashboard</p>
 
-        {/* ✅ onSubmit added */}
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} autoComplete="off">
           <div className="input-group">
             <label>Email</label>
             <input
               type="email"
               placeholder="Enter your email"
               value={formData.email}
+              autoComplete="off"
               onChange={(e) =>
                 setFormData({ ...formData, email: e.target.value })
               }
@@ -101,12 +103,13 @@ function Login() {
             )}
           </div>
 
-          <div className="input-group">
+          <div className="input-group" style={{ marginBottom: "8px" }}>
             <label>Password</label>
             <input
               type="password"
               placeholder="Enter your password"
               value={formData.password}
+              autoComplete="new-password"
               onChange={(e) =>
                 setFormData({ ...formData, password: e.target.value })
               }
@@ -116,29 +119,8 @@ function Login() {
             )}
           </div>
 
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginBottom: "16px",
-            }}
-          >
-            <a
-              href="/signup"
-              onClick={(e) => {
-                e.preventDefault();
-                navigate("/signup");
-              }}
-              style={{
-                color: "#2563eb",
-                fontSize: "13px",
-                textDecoration: "none",
-                fontWeight: "500",
-              }}
-            >
-              Don't have an account? Sign up
-            </a>
+          {/* Forgot Password link cleanly aligned under password field */}
+          <div style={{ textAlign: "right", marginBottom: "20px" }}>
             <a
               href="/forgot-password"
               onClick={(e) => {
@@ -149,7 +131,7 @@ function Login() {
                 color: "#2563eb",
                 fontSize: "13px",
                 textDecoration: "none",
-                fontWeight: "500",
+                fontWeight: "600",
               }}
             >
               Forgot Password?
@@ -175,6 +157,25 @@ function Login() {
           </svg>
           Sign in with Google
         </button>
+
+        {/* Sign up link cleanly centered at card bottom */}
+        <div style={{ marginTop: "22px", fontSize: "14px", color: "#374151" }}>
+          Don't have an account?{" "}
+          <a
+            href="/signup"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate("/signup");
+            }}
+            style={{
+              color: "#2563eb",
+              fontWeight: "700",
+              textDecoration: "none",
+            }}
+          >
+            Sign up
+          </a>
+        </div>
       </div>
     </AuthLayout>
   );
