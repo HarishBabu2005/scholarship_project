@@ -5,6 +5,17 @@ const Notification = require("../models/Notification");
 exports.addScholarship = async (req, res) => {
   try {
     const scholarship = await Scholarship.create(req.body);
+
+    // Emit socket event to notify all connected clients about the new scholarship
+    const io = req.app.get("io");
+    if (io) {
+      io.emit("new_scholarship", {
+        title: "New Scholarship Available!",
+        message: `A new scheme '${scholarship.name}' has just been posted. Check your eligibility now.`,
+        scholarship,
+      });
+    }
+
     res.json({ message: "Scholarship added", scholarship });
   } catch (error) {
     res.status(500).json({ message: "Error adding scholarship" });
@@ -15,6 +26,7 @@ exports.getScholarships = async (req, res) => {
   const scholarships = await Scholarship.find();
   res.json(scholarships);
 };
+
 exports.deleteScholarship = async (req, res) => {
   try {
     await Scholarship.findByIdAndDelete(req.params.id);
@@ -27,11 +39,11 @@ exports.deleteScholarship = async (req, res) => {
 exports.getStudentSubmissions = async (req, res) => {
   try {
     const profiles = await StudentProfile.find().populate("userId", "name email");
-    const formattedSubmissions = profiles.map(profile => ({
+    const formattedSubmissions = profiles.map((profile) => ({
       id: profile._id.toString(),
       studentName: profile.userId ? profile.userId.name : "Unknown",
       email: profile.userId ? profile.userId.email : "Unknown",
-      documents: profile.documents
+      documents: profile.documents,
     }));
     res.json(formattedSubmissions);
   } catch (error) {
@@ -48,7 +60,7 @@ exports.verifyDocument = async (req, res) => {
     const profile = await StudentProfile.findById(submissionId);
     if (!profile) return res.status(404).json({ message: "Profile not found" });
 
-    const document = profile.documents.find(doc => doc.name === docName);
+    const document = profile.documents.find((doc) => doc.name === docName);
     if (!document) return res.status(404).json({ message: "Document not found" });
 
     document.status = status;
@@ -56,17 +68,31 @@ exports.verifyDocument = async (req, res) => {
 
     await profile.save();
 
+    let notificationObj = null;
+
     if (status === "Rejected") {
-      await Notification.create({
+      notificationObj = await Notification.create({
         userId: profile.userId,
-        title: "Document Rejected",
-        message: `Your document '${docName}' has been rejected. Reason: ${adminRemarks || 'Not provided'}`,
+        title: "Document Rejected ❌",
+        message: `Your document '${docName}' has been rejected. Reason: ${adminRemarks || "Not provided"}`,
       });
     } else if (status === "Approved") {
-      await Notification.create({
+      notificationObj = await Notification.create({
         userId: profile.userId,
-        title: "Document Approved",
+        title: "Document Approved ✅",
         message: `Your document '${docName}' has been approved.`,
+      });
+    }
+
+    // Emit real-time notification to the student's socket room
+    const io = req.app.get("io");
+    if (io && profile.userId) {
+      const studentRoom = profile.userId.toString();
+      io.to(studentRoom).emit("notification", {
+        title: notificationObj ? notificationObj.title : `Document ${status}`,
+        message: notificationObj ? notificationObj.message : `Your document '${docName}' status is now ${status}`,
+        docName,
+        status,
       });
     }
 

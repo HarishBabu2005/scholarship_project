@@ -2,26 +2,51 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthLayout from "../components/AuthLayout";
 import API from "../api/axios";
+import { useSocket } from "../context/SocketContext";
 import "../styles/theme.css";
 
 function MyApplications() {
   const navigate = useNavigate();
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { socket } = useSocket();
+
+  const fetchApplications = async () => {
+    try {
+      const res = await API.get("/applications/my-applications");
+      setApplications(res.data);
+    } catch (err) {
+      console.error("Failed to fetch applications", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchApplications = async () => {
-      try {
-        const res = await API.get("/applications/my-applications");
-        setApplications(res.data);
-      } catch (err) {
-        console.error("Failed to fetch applications", err);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchApplications();
   }, []);
+
+  // Listen for real-time application status updates via WebSocket
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleAppUpdated = (data) => {
+      console.log("⚡ Real-time application update received on student view:", data);
+      setApplications((prev) =>
+        prev.map((app) =>
+          app._id === data.applicationId
+            ? { ...app, status: data.status, adminRemarks: data.adminRemarks || app.adminRemarks }
+            : app
+        )
+      );
+    };
+
+    socket.on("application_updated", handleAppUpdated);
+
+    return () => {
+      socket.off("application_updated", handleAppUpdated);
+    };
+  }, [socket]);
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -70,7 +95,9 @@ function MyApplications() {
               &larr; Back to Scholarships
             </button>
             <h1 style={{ margin: 0 }}>My Scholarship Applications</h1>
-            <p style={{ margin: 0, color: "#6b7280" }}>Track live status and disbursal progress</p>
+            <p style={{ margin: 0, color: "#6b7280" }}>
+              Track live status and disbursal progress (⚡ Real-Time Connected)
+            </p>
           </div>
           <button
             className="btn-primary"
@@ -134,6 +161,7 @@ function MyApplications() {
                         fontWeight: "bold",
                         fontSize: "13px",
                         background: getStatusColor(app.status),
+                        transition: "background 0.3s ease",
                       }}
                     >
                       {app.status}
@@ -213,6 +241,7 @@ function MyApplications() {
                                   fontWeight: "bold",
                                   fontSize: "12px",
                                   boxShadow: isCurrent ? "0 0 0 4px rgba(16, 185, 129, 0.2)" : "none",
+                                  transition: "all 0.3s ease",
                                 }}
                               >
                                 {isCompleted ? "✓" : idx + 1}

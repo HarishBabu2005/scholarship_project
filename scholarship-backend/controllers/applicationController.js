@@ -127,12 +127,31 @@ exports.updateApplicationStatusAdmin = async (req, res) => {
       message,
     });
 
+    // Emit real-time notification to the student's socket room
+    const io = req.app.get("io");
+    if (io && application.studentId) {
+      const studentRoom = application.studentId.toString();
+      io.to(studentRoom).emit("notification", {
+        title: `Application Update: ${status} 🎓`,
+        message,
+        applicationId: application._id,
+        status,
+        scholarshipName,
+      });
+      io.to(studentRoom).emit("application_updated", {
+        applicationId: application._id,
+        status,
+        adminRemarks,
+      });
+    }
+
     res.json({ message: "Application status updated successfully", application });
   } catch (error) {
     console.error("Update application status error:", error);
     res.status(500).json({ message: "Error updating application status" });
   }
 };
+
 
 // @desc Get administrative dashboard analytics
 // @route GET /api/applications/admin/analytics
