@@ -2,6 +2,11 @@ const Application = require("../models/Application");
 const Scholarship = require("../models/Scholarship");
 const StudentProfile = require("../models/StudentProfile");
 const Notification = require("../models/Notification");
+const User = require("../models/User");
+const {
+  sendApplicationReceiptEmail,
+  sendApplicationStatusEmail,
+} = require("../utils/sendEmail");
 
 // @desc Apply to a scholarship
 // @route POST /api/applications/apply/:scholarshipId
@@ -40,11 +45,24 @@ exports.applyToScholarship = async (req, res) => {
       status: "Submitted",
     });
 
-    // Notify student
+    // Notify student in database
     await Notification.create({
       userId: studentId,
       title: "Application Submitted",
       message: `Your application for '${scholarship.name}' has been successfully submitted and is under initial review.`,
+    });
+
+    // Dispatch application receipt email to student asynchronously
+    User.findById(studentId).then((user) => {
+      if (user && user.email) {
+        sendApplicationReceiptEmail(
+          user.email,
+          user.name,
+          scholarship.name,
+          scholarship.amount,
+          application._id
+        );
+      }
     });
 
     res.status(201).json({
@@ -102,7 +120,9 @@ exports.updateApplicationStatusAdmin = async (req, res) => {
     const { applicationId } = req.params;
     const { status, adminRemarks } = req.body;
 
-    const application = await Application.findById(applicationId).populate("scholarshipId");
+    const application = await Application.findById(applicationId)
+      .populate("scholarshipId")
+      .populate("studentId", "name email");
     if (!application) {
       return res.status(404).json({ message: "Application not found" });
     }
@@ -130,7 +150,7 @@ exports.updateApplicationStatusAdmin = async (req, res) => {
     // Emit real-time notification to the student's socket room
     const io = req.app.get("io");
     if (io && application.studentId) {
-      const studentRoom = application.studentId.toString();
+      const studentRoom = (application.studentId._id || application.studentId).toString();
       io.to(studentRoom).emit("notification", {
         title: `Application Update: ${status} 🎓`,
         message,
@@ -143,6 +163,17 @@ exports.updateApplicationStatusAdmin = async (req, res) => {
         status,
         adminRemarks,
       });
+    }
+
+    // Dispatch status update email to student
+    if (application.studentId && application.studentId.email) {
+      sendApplicationStatusEmail(
+        application.studentId.email,
+        application.studentId.name,
+        scholarshipName,
+        status,
+        adminRemarks
+      );
     }
 
     res.json({ message: "Application status updated successfully", application });

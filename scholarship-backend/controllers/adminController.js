@@ -1,6 +1,7 @@
 const Scholarship = require("../models/Scholarship");
 const StudentProfile = require("../models/StudentProfile");
 const Notification = require("../models/Notification");
+const { sendDocumentVerificationEmail } = require("../utils/sendEmail");
 
 exports.addScholarship = async (req, res) => {
   try {
@@ -57,7 +58,7 @@ exports.verifyDocument = async (req, res) => {
   const { status, adminRemarks } = req.body;
 
   try {
-    const profile = await StudentProfile.findById(submissionId);
+    const profile = await StudentProfile.findById(submissionId).populate("userId", "name email");
     if (!profile) return res.status(404).json({ message: "Profile not found" });
 
     const document = profile.documents.find((doc) => doc.name === docName);
@@ -72,13 +73,13 @@ exports.verifyDocument = async (req, res) => {
 
     if (status === "Rejected") {
       notificationObj = await Notification.create({
-        userId: profile.userId,
+        userId: profile.userId._id || profile.userId,
         title: "Document Rejected ❌",
         message: `Your document '${docName}' has been rejected. Reason: ${adminRemarks || "Not provided"}`,
       });
     } else if (status === "Approved") {
       notificationObj = await Notification.create({
-        userId: profile.userId,
+        userId: profile.userId._id || profile.userId,
         title: "Document Approved ✅",
         message: `Your document '${docName}' has been approved.`,
       });
@@ -87,13 +88,24 @@ exports.verifyDocument = async (req, res) => {
     // Emit real-time notification to the student's socket room
     const io = req.app.get("io");
     if (io && profile.userId) {
-      const studentRoom = profile.userId.toString();
+      const studentRoom = (profile.userId._id || profile.userId).toString();
       io.to(studentRoom).emit("notification", {
         title: notificationObj ? notificationObj.title : `Document ${status}`,
         message: notificationObj ? notificationObj.message : `Your document '${docName}' status is now ${status}`,
         docName,
         status,
       });
+    }
+
+    // Dispatch document verification email via Nodemailer
+    if (profile.userId && profile.userId.email) {
+      sendDocumentVerificationEmail(
+        profile.userId.email,
+        profile.userId.name,
+        docName,
+        status,
+        adminRemarks
+      );
     }
 
     res.json({ message: "Document updated successfully", profile });

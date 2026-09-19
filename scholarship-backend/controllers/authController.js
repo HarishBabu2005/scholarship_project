@@ -88,6 +88,8 @@ exports.googleLogin = async (req, res) => {
   }
 };
 
+const { sendPasswordResetEmail } = require("../utils/sendEmail");
+
 exports.forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
@@ -115,12 +117,13 @@ exports.forgotPassword = async (req, res) => {
     user.resetTokenExpiry = resetTokenExpiry;
     await user.save();
 
-    // In production, send this via email. For development, return the link.
     const resetLink = `http://localhost:3000/reset-password/${resetToken}`;
 
+    // Dispatch password reset email via Nodemailer
+    await sendPasswordResetEmail(user.email, user.name, resetLink);
+
     res.json({
-      message: "If an account with that email exists, a reset link has been generated.",
-      resetLink, // Remove this in production — only for development
+      message: "If an account with that email exists, a password reset link has been sent to your email.",
     });
   } catch (error) {
     console.error("Forgot password error:", error.message);
