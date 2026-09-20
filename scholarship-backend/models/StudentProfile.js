@@ -17,8 +17,16 @@ const studentProfileSchema = new mongoose.Schema({
       enum: ['Pending', 'Approved', 'Rejected'], 
       default: 'Pending' 
     },
-    adminRemarks: String
+    adminRemarks: String,
+    autoScanScore: { type: Number, default: 0 },
+    autoScanStatus: { 
+      type: String, 
+      enum: ['Verified', 'Discrepancy Detected', 'Unclear Text', 'Pending'],
+      default: 'Pending' 
+    },
+    autoScanDetails: { type: String, default: "" },
+    extractedData: { type: mongoose.Schema.Types.Mixed, default: {} }
   }]
-});
+}, { timestamps: true });
 
 module.exports = mongoose.model("StudentProfile", studentProfileSchema);

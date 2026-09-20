@@ -5,7 +5,8 @@ const {
   getScholarships,
   deleteScholarship,
   getStudentSubmissions,
-  verifyDocument
+  verifyDocument,
+  batchAutoApproveVerified
 } = require("../controllers/adminController");
 
 const { protect, adminOnly } = require("../middleware/authMiddleware");
@@ -21,5 +22,6 @@ router.delete(
 
 router.get("/submissions", protect, adminOnly, getStudentSubmissions);
 router.put("/submission/:submissionId/document/:docName", protect, adminOnly, verifyDocument);
+router.post("/submissions/batch-auto-approve", protect, adminOnly, batchAutoApproveVerified);
 
 module.exports = router;

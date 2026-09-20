@@ -38,12 +38,13 @@ function DocumentUpload() {
   const handleFileChange = (docName, file) => {
     setError("");
     if (!file) return;
-    if (file.type !== "application/pdf") {
-      setError(`Error in ${docName}: Only PDF files are allowed.`);
+    const allowed = ["application/pdf", "image/jpeg", "image/png", "image/jpg"];
+    if (!allowed.includes(file.type)) {
+      setError(`Error in ${docName}: Only PDF, JPG, or PNG files are allowed.`);
       return;
     }
-    if (file.size > 300 * 1024) {
-      setError(`Error in ${docName}: File size must be within 300KB.`);
+    if (file.size > 5 * 1024 * 1024) {
+      setError(`Error in ${docName}: File size must be within 5MB.`);
       return;
     }
     setFiles({ ...files, [docName]: file });
@@ -79,7 +80,7 @@ function DocumentUpload() {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      alert("Documents submitted successfully for admin verification!");
+      alert("Documents submitted and AI auto-scanned successfully!");
       navigate("/scholarships");
     } catch (err) {
       alert(err.response?.data?.message || "Failed to submit documents");
@@ -138,20 +139,20 @@ function DocumentUpload() {
           <p style={{ 
             textAlign: "center", 
             color: "#1e3a8a", 
-            fontSize: "14px", 
+            fontSize: "13.5px", 
             marginTop: "-20px", 
             marginBottom: "30px", 
             fontWeight: "500",
-            background: "rgba(255, 255, 255, 0.3)",
-            padding: "8px",
-            borderRadius: "8px",
+            background: "rgba(255, 255, 255, 0.8)",
+            padding: "10px 16px",
+            borderRadius: "10px",
             display: "inline-block",
             position: "relative",
             left: "50%",
             transform: "translateX(-50%)",
-            border: "1px dashed rgba(30, 58, 138, 0.2)"
+            border: "1px solid rgba(30, 58, 138, 0.2)"
           }}>
-            <span style={{ color: "#dc2626", fontWeight: "bold" }}>Note:</span> All documents must be in <span style={{ fontWeight: "bold" }}>PDF</span> format and size within <span style={{ fontWeight: "bold" }}>300KB</span>.
+            🤖 <strong>AI Auto-Scan Enabled:</strong> Upload PDF, PNG, or JPG files (up to 5MB). Files are instantly scanned & verified against your profile metrics!
           </p>
           
           {error && (
@@ -193,7 +194,7 @@ function DocumentUpload() {
                       <td style={td}>
                         <input
                           type="file"
-                          accept=".pdf"
+                          accept=".pdf,.png,.jpg,.jpeg"
                           style={fileInput}
                           onChange={(e) =>
                             handleFileChange(doc, e.target.files[0])

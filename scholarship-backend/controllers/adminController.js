@@ -114,3 +114,43 @@ exports.verifyDocument = async (req, res) => {
     res.status(500).json({ message: "Error updating document" });
   }
 };
+
+exports.batchAutoApproveVerified = async (req, res) => {
+  try {
+    const profiles = await StudentProfile.find({ "documents.status": "Pending" }).populate("userId", "name email");
+    let autoApprovedCount = 0;
+
+    for (const profile of profiles) {
+      let updated = false;
+      for (const doc of profile.documents) {
+        if (doc.status === "Pending" && (doc.autoScanScore >= 85 || doc.autoScanStatus === "Verified")) {
+          doc.status = "Approved";
+          doc.adminRemarks = `Auto-Approved by AI Verification Engine (Confidence Match: ${doc.autoScanScore || 90}%)`;
+          updated = true;
+          autoApprovedCount++;
+
+          if (profile.userId && profile.userId.email) {
+            sendDocumentVerificationEmail(
+              profile.userId.email,
+              profile.userId.name,
+              doc.name,
+              "Approved",
+              doc.adminRemarks
+            );
+          }
+        }
+      }
+      if (updated) {
+        await profile.save();
+      }
+    }
+
+    res.json({
+      message: `Batch auto-approval complete! Approved ${autoApprovedCount} verified documents.`,
+      autoApprovedCount,
+    });
+  } catch (error) {
+    console.error("Batch auto-approve error:", error);
+    res.status(500).json({ message: "Failed to batch auto-approve documents" });
+  }
+};

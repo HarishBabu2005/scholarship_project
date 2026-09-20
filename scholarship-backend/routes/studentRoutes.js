@@ -1,11 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const { protect } = require("../middleware/authMiddleware");
-const { submitDocuments, getProfile, streamDocument } = require("../controllers/studentController");
+const { submitDocuments, getProfile, streamDocument, reScanDocument } = require("../controllers/studentController");
 const multer = require("multer");
 const path = require("path");
 
-// Configure multer for PDF uploads
+// Configure multer for file uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "uploads/");
@@ -17,17 +17,18 @@ const storage = multer.diskStorage({
 });
 
 const fileFilter = (req, file, cb) => {
-  if (file.mimetype === "application/pdf") {
+  const allowedTypes = ["application/pdf", "image/jpeg", "image/png", "image/jpg"];
+  if (allowedTypes.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(new Error("Only PDF files are allowed"), false);
+    cb(new Error("Only PDF, JPG, and PNG files are allowed"), false);
   }
 };
 
 const upload = multer({
   storage,
   fileFilter,
-  limits: { fileSize: 300 * 1024 }, // 300KB
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
 });
 
 // Accept up to 12 document fields
@@ -40,6 +41,6 @@ router.post(
 
 router.get("/profile", protect, getProfile);
 router.get("/document/:filename", protect, streamDocument);
+router.post("/scan-document/:docId", protect, reScanDocument);
 
 module.exports = router;
-
