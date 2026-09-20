@@ -57,6 +57,7 @@ app.use("/api/admin", require("./routes/adminRoutes"));
 app.use("/api/notifications", require("./routes/notificationRoutes"));
 app.use("/api/student", require("./routes/studentRoutes"));
 app.use("/api/applications", require("./routes/applicationRoutes"));
+app.use("/api/ai", require("./routes/aiRoutes"));
 
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {

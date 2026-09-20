@@ -22,6 +22,7 @@ import Notifications from "./pages/Notifications";
 
 import { SocketProvider } from "./context/SocketContext";
 import NotificationToast from "./components/NotificationToast";
+import AIChatbot from "./components/AIChatbot";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
 const googleClientId =
@@ -145,6 +146,7 @@ function App() {
               }
             />
           </Routes>
+          <AIChatbot />
         </BrowserRouter>
       </SocketProvider>
     </GoogleOAuthProvider>
